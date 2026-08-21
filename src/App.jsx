@@ -5,6 +5,8 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Dashboard from "./pages/admin/Dashboard";
 import Products from "./pages/admin/Inventory/Products";
 
+import Payments from "./pages/admin/Payments/Payments";
+
 import Customers from "./pages/admin/Customers/Customers";
 import Statements from "./pages/admin/Customers/Statements";
 
@@ -57,6 +59,7 @@ const App = () => {
 
           <Route path="sales/invoices" element={<Invoices />} />
           <Route path="sales/returns" element={<SalesReturn />} />
+          <Route path="sales/payments" element={<Payments />} />
 
           {/* =========================
               CUSTOMERS
@@ -72,7 +75,6 @@ const App = () => {
           <Route path="expenses" element={<Expenses />} />
 
           <Route path="reports" element={<Reports />} />
-          
         </Route>
       </Routes>
     </BrowserRouter>
