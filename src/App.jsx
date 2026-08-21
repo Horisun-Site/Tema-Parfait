@@ -16,10 +16,13 @@ import StockControl from "./pages/admin/Inventory/StockControl";
 import BatchExpiry from "./pages/admin/Inventory/BatchExpiry";
 import Invoices from "./pages/admin/Sales/Invoices";
 import SalesReturn from "./pages/admin/Sales/SalesReturn";
+import DeliveryNotes from "./pages/admin/DeliveryNotes/DeliveryNotes";
 
 import Expenses from "./pages/admin/Expenses/Expenses";
 
 import Reports from "./pages/admin/Reports/Reports";
+
+import Users from "./pages/admin/Administration/Users";
 
 // Admin Layout
 import AdminLayout from "../layouts/AdminLayout";
@@ -39,42 +42,38 @@ const App = () => {
         <Route path="/admin" element={<AdminLayout />}>
           {/* Dashboard */}
           <Route path="dashboard" element={<Dashboard />} />
-
           {/* =========================
               INVENTORY
           ========================== */}
-
           {/* Product Master */}
           <Route path="inventory/products" element={<Products />} />
-
           <Route path="inventory/receiving" element={<Receiving />} />
-
           <Route path="inventory/stock" element={<StockControl />} />
-
           <Route path="inventory/batches" element={<BatchExpiry />} />
-
           {/* =========================
               SALES
           ========================== */}
-
           <Route path="sales/invoices" element={<Invoices />} />
           <Route path="sales/returns" element={<SalesReturn />} />
           <Route path="sales/payments" element={<Payments />} />
-
+          <Route path="sales/delivery-notes" element={<DeliveryNotes />} />
           {/* =========================
               CUSTOMERS
           ========================== */}
-
           {/* Customer Database */}
           <Route path="customers" element={<Customers />} />
-
           <Route path="customers/statements" element={<Statements />} />
-
           <Route path="suppliers" element={<Suppliers />} />
-
           <Route path="expenses" element={<Expenses />} />
-
           <Route path="reports" element={<Reports />} />
+          {/* =========================
+              Administration
+          ========================== */}
+          {/* Administration */}
+          <Route path="settings/users" element={<Users />} />
+
+
+
         </Route>
       </Routes>
     </BrowserRouter>
