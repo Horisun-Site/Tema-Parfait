@@ -15,6 +15,10 @@ import BatchExpiry from "./pages/admin/Inventory/BatchExpiry";
 import Invoices from "./pages/admin/Sales/Invoices";
 import SalesReturn from "./pages/admin/Sales/SalesReturn";
 
+import Expenses from "./pages/admin/Expenses/Expenses";
+
+import Reports from "./pages/admin/Reports/Reports";
+
 // Admin Layout
 import AdminLayout from "../layouts/AdminLayout";
 
@@ -64,6 +68,11 @@ const App = () => {
           <Route path="customers/statements" element={<Statements />} />
 
           <Route path="suppliers" element={<Suppliers />} />
+
+          <Route path="expenses" element={<Expenses />} />
+
+          <Route path="reports" element={<Reports />} />
+          
         </Route>
       </Routes>
     </BrowserRouter>
