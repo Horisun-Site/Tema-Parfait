@@ -35,28 +35,76 @@ const InvoiceMaster = () => {
       invoiceNumber: "TF-20260819-0001",
       date: "2026-08-19",
       time: "09:30 AM",
+
       customer: "ABC Supermarket",
       customerId: "CUS-001",
-      subtotal: 85000,
+
+      items: [
+        {
+          id: 1,
+          productId: "PRD-001",
+          product: "Parfait 500ml",
+          quantity: 100,
+          price: 500,
+          discount: 5000,
+        },
+        {
+          id: 2,
+          productId: "PRD-002",
+          product: "Parfait 1L",
+          quantity: 50,
+          price: 1200,
+          discount: 0,
+        },
+      ],
+
+      subtotal: 110000,
       discount: 5000,
-      vat: 6000,
-      total: 86000,
+      vat: 7875,
+      total: 112875,
+
       paymentStatus: "Paid",
       deliveryStatus: "Delivered",
+
+      notes: "",
     },
     {
       id: 2,
       invoiceNumber: "TF-20260819-0002",
       date: "2026-08-19",
       time: "11:15 AM",
+
       customer: "Fresh Mart",
       customerId: "CUS-002",
-      subtotal: 120000,
+
+      items: [
+        {
+          id: 1,
+          productId: "PRD-003",
+          product: "Chocolate Parfait",
+          quantity: 100,
+          price: 800,
+          discount: 5000,
+        },
+        {
+          id: 2,
+          productId: "PRD-004",
+          product: "Strawberry Parfait",
+          quantity: 50,
+          price: 1000,
+          discount: 5000,
+        },
+      ],
+
+      subtotal: 130000,
       discount: 10000,
-      vat: 8250,
-      total: 118250,
+      vat: 9000,
+      total: 129000,
+
       paymentStatus: "Pending",
       deliveryStatus: "Pending",
+
+      notes: "",
     },
   ]);
 
@@ -69,20 +117,13 @@ const InvoiceMaster = () => {
 
     return invoices.filter((invoice) => {
       const matchesSearch =
-        invoice.invoiceNumber
-          ?.toLowerCase()
-          .includes(query) ||
-        invoice.customer
-          ?.toLowerCase()
-          .includes(query) ||
-        invoice.customerId
-          ?.toLowerCase()
-          .includes(query);
+        invoice.invoiceNumber?.toLowerCase().includes(query) ||
+        invoice.customer?.toLowerCase().includes(query) ||
+        invoice.customerId?.toLowerCase().includes(query);
 
       const matchesStatus =
         statusFilter === "all" ||
-        invoice.paymentStatus.toLowerCase() ===
-          statusFilter.toLowerCase();
+        invoice.paymentStatus.toLowerCase() === statusFilter.toLowerCase();
 
       return matchesSearch && matchesStatus;
     });
@@ -95,19 +136,16 @@ const InvoiceMaster = () => {
   const totalInvoices = invoices.length;
 
   const totalRevenue = invoices.reduce(
-    (total, invoice) =>
-      total + Number(invoice.total || 0),
+    (total, invoice) => total + Number(invoice.total || 0),
     0
   );
 
   const paidInvoices = invoices.filter(
-    (invoice) =>
-      invoice.paymentStatus === "Paid"
+    (invoice) => invoice.paymentStatus === "Paid"
   ).length;
 
   const pendingInvoices = invoices.filter(
-    (invoice) =>
-      invoice.paymentStatus === "Pending"
+    (invoice) => invoice.paymentStatus === "Pending"
   ).length;
 
   // ==========================================
@@ -173,16 +211,14 @@ const InvoiceMaster = () => {
         invoiceNumber: `TF-${new Date()
           .toISOString()
           .slice(0, 10)
-          .replaceAll("-", "")}-${String(
-          invoices.length + 1
-        ).padStart(4, "0")}`,
+          .replaceAll("-", "")}-${String(invoices.length + 1).padStart(
+          4,
+          "0"
+        )}`,
         ...invoiceData,
       };
 
-      setInvoices((currentInvoices) => [
-        ...currentInvoices,
-        newInvoice,
-      ]);
+      setInvoices((currentInvoices) => [...currentInvoices, newInvoice]);
     }
 
     setShowForm(false);
@@ -200,32 +236,23 @@ const InvoiceMaster = () => {
 
   return (
     <div className="space-y-6">
-
       {/* ======================================
           PAGE HEADER
       ======================================= */}
 
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-
         <div className="flex items-center gap-3">
-
           <div className="p-3 bg-gray-100 rounded-xl">
-            <Receipt
-              size={23}
-              className="text-gray-700"
-            />
+            <Receipt size={23} className="text-gray-700" />
           </div>
 
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">
-              Sales Invoices
-            </h1>
+            <h1 className="text-2xl font-bold text-gray-900">Sales Invoices</h1>
 
             <p className="text-sm text-gray-500 mt-1">
               Create, manage and track customer invoices.
             </p>
           </div>
-
         </div>
 
         <button
@@ -234,10 +261,8 @@ const InvoiceMaster = () => {
           className="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-gray-900 text-white hover:bg-gray-800 transition"
         >
           <Plus size={18} />
-
           New Invoice
         </button>
-
       </div>
 
       {/* ======================================
@@ -245,14 +270,9 @@ const InvoiceMaster = () => {
       ======================================= */}
 
       <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
-
         {/* Total Invoices */}
 
-        <StatCard
-          title="Total Invoices"
-          value={totalInvoices}
-          icon={Receipt}
-        />
+        <StatCard title="Total Invoices" value={totalInvoices} icon={Receipt} />
 
         {/* Revenue */}
 
@@ -277,7 +297,6 @@ const InvoiceMaster = () => {
           value={pendingInvoices}
           icon={Clock}
         />
-
       </div>
 
       {/* ======================================
@@ -285,13 +304,10 @@ const InvoiceMaster = () => {
       ======================================= */}
 
       <div className="bg-white border border-gray-200 rounded-2xl p-5">
-
         <div className="flex flex-col lg:flex-row gap-4">
-
           {/* Search */}
 
           <div className="relative flex-1">
-
             <Search
               size={19}
               className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
@@ -300,48 +316,30 @@ const InvoiceMaster = () => {
             <input
               type="text"
               value={search}
-              onChange={(e) =>
-                setSearch(e.target.value)
-              }
+              onChange={(e) => setSearch(e.target.value)}
               placeholder="Search invoice number, customer..."
               className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-xl outline-none focus:ring-2 focus:ring-gray-200"
             />
-
           </div>
 
           {/* Filter */}
 
           <div className="flex items-center gap-2">
-
-            <SlidersHorizontal
-              size={19}
-              className="text-gray-500"
-            />
+            <SlidersHorizontal size={19} className="text-gray-500" />
 
             <select
               value={statusFilter}
-              onChange={(e) =>
-                setStatusFilter(e.target.value)
-              }
+              onChange={(e) => setStatusFilter(e.target.value)}
               className="px-4 py-3 border border-gray-200 rounded-xl bg-white outline-none"
             >
-              <option value="all">
-                All Payments
-              </option>
+              <option value="all">All Payments</option>
 
-              <option value="paid">
-                Paid
-              </option>
+              <option value="paid">Paid</option>
 
-              <option value="pending">
-                Pending
-              </option>
+              <option value="pending">Pending</option>
             </select>
-
           </div>
-
         </div>
-
       </div>
 
       {/* ======================================
@@ -366,7 +364,6 @@ const InvoiceMaster = () => {
           onSave={handleSaveInvoice}
         />
       )}
-
     </div>
   );
 };
@@ -375,37 +372,20 @@ const InvoiceMaster = () => {
 // STAT CARD
 // ==========================================
 
-const StatCard = ({
-  title,
-  value,
-  icon: Icon,
-}) => {
+const StatCard = ({ title, value, icon: Icon }) => {
   return (
     <div className="bg-white border border-gray-200 rounded-2xl p-5">
-
       <div className="flex items-center justify-between">
-
         <div>
+          <p className="text-sm text-gray-500">{title}</p>
 
-          <p className="text-sm text-gray-500">
-            {title}
-          </p>
-
-          <h2 className="text-2xl font-bold text-gray-900 mt-2">
-            {value}
-          </h2>
-
+          <h2 className="text-2xl font-bold text-gray-900 mt-2">{value}</h2>
         </div>
 
         <div className="p-3 bg-gray-100 rounded-xl">
-          <Icon
-            size={20}
-            className="text-gray-700"
-          />
+          <Icon size={20} className="text-gray-700" />
         </div>
-
       </div>
-
     </div>
   );
 };

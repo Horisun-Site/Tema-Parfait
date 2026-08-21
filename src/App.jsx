@@ -4,11 +4,16 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 // Admin Pages
 import Dashboard from "./pages/admin/Dashboard";
 import Products from "./pages/admin/Inventory/Products";
+
 import Customers from "./pages/admin/Customers/Customers";
+import Statements from "./pages/admin/Customers/Statements";
+
 import Suppliers from "./pages/admin/Suppliers/Suppliers";
 import Receiving from "./pages/admin/Inventory/Receiving";
 import StockControl from "./pages/admin/Inventory/StockControl";
 import BatchExpiry from "./pages/admin/Inventory/BatchExpiry";
+import Invoices from "./pages/admin/Sales/Invoices";
+import SalesReturn from "./pages/admin/Sales/SalesReturn";
 
 // Admin Layout
 import AdminLayout from "../layouts/AdminLayout";
@@ -43,11 +48,20 @@ const App = () => {
           <Route path="inventory/batches" element={<BatchExpiry />} />
 
           {/* =========================
+              SALES
+          ========================== */}
+
+          <Route path="sales/invoices" element={<Invoices />} />
+          <Route path="sales/returns" element={<SalesReturn />} />
+
+          {/* =========================
               CUSTOMERS
           ========================== */}
 
           {/* Customer Database */}
           <Route path="customers" element={<Customers />} />
+
+          <Route path="customers/statements" element={<Statements />} />
 
           <Route path="suppliers" element={<Suppliers />} />
         </Route>

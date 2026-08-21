@@ -12,11 +12,7 @@ import {
 import InvoiceItems from "./InvoiceItems";
 import InvoiceSummary from "./InvoiceSummary";
 
-const InvoiceForm = ({
-  invoice = null,
-  onClose,
-  onSave,
-}) => {
+const InvoiceForm = ({ invoice = null, onClose, onSave }) => {
   // ==========================================
   // TEMPORARY DATA
   // ==========================================
@@ -53,32 +49,23 @@ const InvoiceForm = ({
   // FORM STATE
   // ==========================================
 
-  const [customerId, setCustomerId] = useState(
-    invoice?.customerId || ""
-  );
+  const [customerId, setCustomerId] = useState(invoice?.customerId || "");
 
   const [invoiceDate, setInvoiceDate] = useState(
-    invoice?.date ||
-      new Date().toISOString().slice(0, 10)
+    invoice?.date || new Date().toISOString().slice(0, 10)
   );
 
-  const [paymentStatus, setPaymentStatus] =
-    useState(
-      invoice?.paymentStatus || "Pending"
-    );
-
-  const [deliveryStatus, setDeliveryStatus] =
-    useState(
-      invoice?.deliveryStatus || "Pending"
-    );
-
-  const [notes, setNotes] = useState(
-    invoice?.notes || ""
+  const [paymentStatus, setPaymentStatus] = useState(
+    invoice?.paymentStatus || "Pending"
   );
 
-  const [items, setItems] = useState(
-    invoice?.items || []
+  const [deliveryStatus, setDeliveryStatus] = useState(
+    invoice?.deliveryStatus || "Pending"
   );
+
+  const [notes, setNotes] = useState(invoice?.notes || "");
+
+  const [items, setItems] = useState(invoice?.items ?? []);
 
   const [isSaving, setIsSaving] = useState(false);
 
@@ -87,10 +74,7 @@ const InvoiceForm = ({
   // ==========================================
 
   const selectedCustomer = useMemo(() => {
-    return customers.find(
-      (customer) =>
-        customer.id === customerId
-    );
+    return customers.find((customer) => customer.id === customerId);
   }, [customerId]);
 
   // ==========================================
@@ -100,26 +84,16 @@ const InvoiceForm = ({
   const subtotal = useMemo(() => {
     return items.reduce(
       (total, item) =>
-        total +
-        Number(item.quantity || 0) *
-          Number(item.price || 0),
+        total + Number(item.quantity || 0) * Number(item.price || 0),
       0
     );
   }, [items]);
 
   const discount = useMemo(() => {
-    return items.reduce(
-      (total, item) =>
-        total +
-        Number(item.discount || 0),
-      0
-    );
+    return items.reduce((total, item) => total + Number(item.discount || 0), 0);
   }, [items]);
 
-  const taxableAmount = Math.max(
-    0,
-    subtotal - discount
-  );
+  const taxableAmount = Math.max(0, subtotal - discount);
 
   // Temporary VAT rate.
   // We will make this configurable later.
@@ -129,8 +103,7 @@ const InvoiceForm = ({
     return taxableAmount * (vatRate / 100);
   }, [taxableAmount]);
 
-  const grandTotal =
-    taxableAmount + vat;
+  const grandTotal = taxableAmount + vat;
 
   // ==========================================
   // UPDATE ITEMS
@@ -153,22 +126,16 @@ const InvoiceForm = ({
     }
 
     if (items.length === 0) {
-      alert(
-        "Please add at least one product."
-      );
+      alert("Please add at least one product.");
       return;
     }
 
     const invalidItem = items.some(
-      (item) =>
-        !item.productId ||
-        Number(item.quantity || 0) <= 0
+      (item) => !item.productId || Number(item.quantity || 0) <= 0
     );
 
     if (invalidItem) {
-      alert(
-        "Please complete all product lines."
-      );
+      alert("Please complete all product lines.");
       return;
     }
 
@@ -181,8 +148,9 @@ const InvoiceForm = ({
 
       // This will eventually be generated
       // by FastAPI/database.
-      time: invoice?.time || new Date()
-        .toLocaleTimeString("en-NG", {
+      time:
+        invoice?.time ||
+        new Date().toLocaleTimeString("en-NG", {
           hour: "2-digit",
           minute: "2-digit",
         }),
@@ -202,9 +170,7 @@ const InvoiceForm = ({
     };
 
     try {
-      await new Promise((resolve) =>
-        setTimeout(resolve, 300)
-      );
+      await new Promise((resolve) => setTimeout(resolve, 300));
 
       onSave?.(invoiceData);
     } finally {
@@ -226,36 +192,26 @@ const InvoiceForm = ({
 
   return (
     <div className="fixed inset-0 z-50 bg-black/40 flex items-center justify-center p-4">
-
       <div className="w-full max-w-7xl max-h-[95vh] bg-white rounded-2xl shadow-xl overflow-hidden flex flex-col">
-
         {/* ======================================
             HEADER
         ======================================= */}
 
         <div className="flex items-center justify-between px-6 py-5 border-b border-gray-200">
-
           <div className="flex items-center gap-3">
-
             <div className="p-3 bg-gray-100 rounded-xl">
-              <Receipt
-                size={22}
-                className="text-gray-700"
-              />
+              <Receipt size={22} className="text-gray-700" />
             </div>
 
             <div>
               <h2 className="text-xl font-bold text-gray-900">
-                {invoice
-                  ? "Edit Invoice"
-                  : "Create New Invoice"}
+                {invoice ? "Edit Invoice" : "Create New Invoice"}
               </h2>
 
               <p className="text-sm text-gray-500 mt-1">
                 Create and manage a customer sales invoice.
               </p>
             </div>
-
           </div>
 
           <button
@@ -265,133 +221,91 @@ const InvoiceForm = ({
           >
             <X size={21} />
           </button>
-
         </div>
 
         {/* ======================================
             FORM BODY
         ======================================= */}
 
-        <form
-          onSubmit={handleSubmit}
-          className="flex-1 overflow-y-auto"
-        >
-
+        <form onSubmit={handleSubmit} className="flex-1 overflow-y-auto">
           <div className="p-6 space-y-6">
-
             {/* ==================================
                 CUSTOMER & INVOICE INFORMATION
             =================================== */}
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-
               {/* Customer */}
 
               <div className="bg-gray-50 border border-gray-200 rounded-2xl p-5">
-
                 <div className="flex items-center gap-2 mb-4">
-
                   <User size={18} />
 
                   <h3 className="font-semibold text-gray-900">
                     Customer Information
                   </h3>
-
                 </div>
 
                 <div className="space-y-4">
-
                   <div>
-
                     <label className="block text-sm font-medium text-gray-700 mb-2">
                       Customer *
                     </label>
 
                     <select
                       value={customerId}
-                      onChange={(e) =>
-                        setCustomerId(
-                          e.target.value
-                        )
-                      }
+                      onChange={(e) => setCustomerId(e.target.value)}
                       className="w-full px-4 py-3 border border-gray-200 rounded-xl bg-white outline-none focus:ring-2 focus:ring-gray-200"
                       required
                     >
-                      <option value="">
-                        Select customer
-                      </option>
+                      <option value="">Select customer</option>
 
-                      {customers.map(
-                        (customer) => (
-                          <option
-                            key={customer.id}
-                            value={customer.id}
-                          >
-                            {customer.name} —{" "}
-                            {customer.branch}
-                          </option>
-                        )
-                      )}
+                      {customers.map((customer) => (
+                        <option key={customer.id} value={customer.id}>
+                          {customer.name} — {customer.branch}
+                        </option>
+                      ))}
                     </select>
-
                   </div>
 
                   {selectedCustomer && (
                     <div className="grid grid-cols-2 gap-3">
-
                       <InfoBox
                         label="Customer ID"
-                        value={
-                          selectedCustomer.id
-                        }
+                        value={selectedCustomer.id}
                       />
 
                       <InfoBox
                         label="Telephone"
-                        value={
-                          selectedCustomer.telephone
-                        }
+                        value={selectedCustomer.telephone}
                       />
 
                       <InfoBox
                         label="Credit Limit"
-                        value={formatCurrency(
-                          selectedCustomer.creditLimit
-                        )}
+                        value={formatCurrency(selectedCustomer.creditLimit)}
                       />
 
                       <InfoBox
                         label="Current Balance"
-                        value={formatCurrency(
-                          selectedCustomer.balance
-                        )}
+                        value={formatCurrency(selectedCustomer.balance)}
                       />
-
                     </div>
                   )}
-
                 </div>
-
               </div>
 
               {/* Invoice Details */}
 
               <div className="bg-gray-50 border border-gray-200 rounded-2xl p-5">
-
                 <div className="flex items-center gap-2 mb-4">
-
                   <CalendarDays size={18} />
 
                   <h3 className="font-semibold text-gray-900">
                     Invoice Information
                   </h3>
-
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-
                   <div>
-
                     <label className="block text-sm font-medium text-gray-700 mb-2">
                       Invoice Date *
                     </label>
@@ -399,115 +313,71 @@ const InvoiceForm = ({
                     <input
                       type="date"
                       value={invoiceDate}
-                      onChange={(e) =>
-                        setInvoiceDate(
-                          e.target.value
-                        )
-                      }
+                      onChange={(e) => setInvoiceDate(e.target.value)}
                       className="w-full px-4 py-3 border border-gray-200 rounded-xl bg-white outline-none"
                       required
                     />
-
                   </div>
 
                   <div>
-
                     <label className="block text-sm font-medium text-gray-700 mb-2">
                       Payment Status
                     </label>
 
                     <select
                       value={paymentStatus}
-                      onChange={(e) =>
-                        setPaymentStatus(
-                          e.target.value
-                        )
-                      }
+                      onChange={(e) => setPaymentStatus(e.target.value)}
                       className="w-full px-4 py-3 border border-gray-200 rounded-xl bg-white outline-none"
                     >
-                      <option value="Pending">
-                        Pending
-                      </option>
+                      <option value="Pending">Pending</option>
 
-                      <option value="Paid">
-                        Paid
-                      </option>
+                      <option value="Paid">Paid</option>
 
-                      <option value="Partially Paid">
-                        Partially Paid
-                      </option>
+                      <option value="Partially Paid">Partially Paid</option>
 
-                      <option value="Overdue">
-                        Overdue
-                      </option>
-
+                      <option value="Overdue">Overdue</option>
                     </select>
-
                   </div>
 
                   <div>
-
                     <label className="block text-sm font-medium text-gray-700 mb-2">
                       Delivery Status
                     </label>
 
                     <select
                       value={deliveryStatus}
-                      onChange={(e) =>
-                        setDeliveryStatus(
-                          e.target.value
-                        )
-                      }
+                      onChange={(e) => setDeliveryStatus(e.target.value)}
                       className="w-full px-4 py-3 border border-gray-200 rounded-xl bg-white outline-none"
                     >
-                      <option value="Pending">
-                        Pending
-                      </option>
+                      <option value="Pending">Pending</option>
 
-                      <option value="Processing">
-                        Processing
-                      </option>
+                      <option value="Processing">Processing</option>
 
-                      <option value="Delivered">
-                        Delivered
-                      </option>
-
+                      <option value="Delivered">Delivered</option>
                     </select>
-
                   </div>
 
                   <div>
-
                     <label className="block text-sm font-medium text-gray-700 mb-2">
                       Invoice Number
                     </label>
 
                     <input
                       type="text"
-                      value={
-                        invoice?.invoiceNumber ||
-                        "Auto-generated"
-                      }
+                      value={invoice?.invoiceNumber || "Auto-generated"}
                       disabled
                       className="w-full px-4 py-3 border border-gray-200 rounded-xl bg-gray-100 text-gray-500"
                     />
-
                   </div>
-
                 </div>
-
               </div>
-
             </div>
 
             {/* ==================================
                 PRODUCTS
             =================================== */}
 
-            <InvoiceItems
-              items={items}
-              onChange={handleItemsChange}
-            />
+            <InvoiceItems items={items} onChange={handleItemsChange} />
 
             {/* ==================================
                 SUMMARY
@@ -527,23 +397,18 @@ const InvoiceForm = ({
             =================================== */}
 
             <div className="bg-white border border-gray-200 rounded-2xl p-5">
-
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Notes
               </label>
 
               <textarea
                 value={notes}
-                onChange={(e) =>
-                  setNotes(e.target.value)
-                }
+                onChange={(e) => setNotes(e.target.value)}
                 rows={3}
                 placeholder="Add any notes for this invoice..."
                 className="w-full px-4 py-3 border border-gray-200 rounded-xl outline-none resize-none"
               />
-
             </div>
-
           </div>
 
           {/* ====================================
@@ -551,29 +416,19 @@ const InvoiceForm = ({
           ===================================== */}
 
           <div className="sticky bottom-0 bg-white border-t border-gray-200 px-6 py-4 flex flex-col sm:flex-row items-center justify-between gap-3">
-
             <div className="flex items-center gap-2 text-sm text-gray-500">
-
               <CreditCard size={17} />
 
-              <span>
-                Payment: {paymentStatus}
-              </span>
+              <span>Payment: {paymentStatus}</span>
 
-              <span className="text-gray-300">
-                |
-              </span>
+              <span className="text-gray-300">|</span>
 
               <Truck size={17} />
 
-              <span>
-                Delivery: {deliveryStatus}
-              </span>
-
+              <span>Delivery: {deliveryStatus}</span>
             </div>
 
             <div className="flex items-center gap-3">
-
               <button
                 type="button"
                 onClick={onClose}
@@ -595,15 +450,10 @@ const InvoiceForm = ({
                   ? "Update Invoice"
                   : "Save Invoice"}
               </button>
-
             </div>
-
           </div>
-
         </form>
-
       </div>
-
     </div>
   );
 };
@@ -612,21 +462,12 @@ const InvoiceForm = ({
 // INFO BOX
 // ==========================================
 
-const InfoBox = ({
-  label,
-  value,
-}) => {
+const InfoBox = ({ label, value }) => {
   return (
     <div className="bg-white border border-gray-200 rounded-xl p-3">
+      <p className="text-xs text-gray-500">{label}</p>
 
-      <p className="text-xs text-gray-500">
-        {label}
-      </p>
-
-      <p className="text-sm font-medium text-gray-900 mt-1 truncate">
-        {value}
-      </p>
-
+      <p className="text-sm font-medium text-gray-900 mt-1 truncate">{value}</p>
     </div>
   );
 };

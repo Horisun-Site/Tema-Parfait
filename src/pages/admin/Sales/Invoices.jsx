@@ -1,9 +1,12 @@
-import React from 'react'
+import React from "react";
+import InvoiceMaster from "../../../component/admin/Sales/Invoices/InvoiceMaster";
 
 const Invoices = () => {
   return (
-    <div>Invoices</div>
-  )
-}
+    <div className="min-h-screen bg-gray-50">
+      <InvoiceMaster />
+    </div>
+  );
+};
 
-export default Invoices
+export default Invoices;
