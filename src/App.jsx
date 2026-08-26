@@ -23,6 +23,7 @@ import Expenses from "./pages/admin/Expenses/Expenses";
 import Reports from "./pages/admin/Reports/Reports";
 
 import Users from "./pages/admin/Administration/Users";
+import RolesPermissions from "./pages/admin/RolesPermissions/RolesPermissions";
 
 // Admin Layout
 import AdminLayout from "../layouts/AdminLayout";
@@ -71,9 +72,7 @@ const App = () => {
           ========================== */}
           {/* Administration */}
           <Route path="settings/users" element={<Users />} />
-
-
-
+          <Route path="settings/roles" element={<RolesPermissions />} />
         </Route>
       </Routes>
     </BrowserRouter>
