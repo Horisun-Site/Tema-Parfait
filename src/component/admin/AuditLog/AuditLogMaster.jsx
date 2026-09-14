@@ -6,7 +6,6 @@ import {
   UserCheck,
   AlertTriangle,
   CheckCircle2,
-  SlidersHorizontal,
   Eye,
 } from "lucide-react";
 
@@ -15,128 +14,209 @@ import AuditLogTable from "./AuditLogTable";
 
 const AuditLogMaster = () => {
   // ==========================================
+  // CURRENT DATE
+  // ==========================================
+  // Returns the current LOCAL date as:
+  // YYYY-MM-DD
+  //
+  // We do not use toISOString() here because
+  // that uses UTC and can sometimes return the
+  // previous/next day depending on the timezone.
+
+  const getCurrentDate = () => {
+    const now = new Date();
+
+    const year = now.getFullYear();
+
+    const month = String(
+      now.getMonth() + 1
+    ).padStart(2, "0");
+
+    const day = String(
+      now.getDate()
+    ).padStart(2, "0");
+
+    return `${year}-${month}-${day}`;
+  };
+
+  // ==========================================
+  // CURRENT TIME
+  // ==========================================
+
+  const getCurrentTime = () => {
+    return new Date().toLocaleTimeString("en-NG", {
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+  };
+
+  // ==========================================
+  // INITIAL DATE
+  // ==========================================
+
+  const today = getCurrentDate();
+
+  // ==========================================
   // STATE
   // ==========================================
 
   const [search, setSearch] = useState("");
 
+  // IMPORTANT:
+  // Date is automatically set to today's date.
   const [filters, setFilters] = useState({
     user: "all",
     module: "all",
     action: "all",
     status: "all",
-    date: "",
+    date: today,
   });
 
-  const [selectedLog, setSelectedLog] = useState(null);
-  const [showDetails, setShowDetails] = useState(false);
+  const [selectedLog, setSelectedLog] =
+    useState(null);
+
+  const [showDetails, setShowDetails] =
+    useState(false);
 
   // ==========================================
   // TEMPORARY FRONTEND DATA
   // ==========================================
-  // This will later come from the database/API.
+  // Later this will come from Firebase/database/API.
+  //
+  // Every record automatically receives today's
+  // current date.
 
-  const [auditLogs] = useState([
-    {
-      id: 1,
-      date: "2026-08-26",
-      time: "10:32 AM",
-      userId: "USR-001",
-      userName: "Admin",
-      action: "Create",
-      module: "Products",
-      record: "PRD-001",
-      description:
-        "Created new product Paracetamol 500mg.",
-      status: "Success",
-      ipAddress: "192.168.1.10",
-    },
+  const [auditLogs] = useState(() => {
+    const currentDate = getCurrentDate();
 
-    {
-      id: 2,
-      date: "2026-08-26",
-      time: "11:05 AM",
-      userId: "USR-002",
-      userName: "John",
-      action: "Update",
-      module: "Invoices",
-      record: "TF-20260826-0001",
-      description:
-        "Updated customer invoice TF-20260826-0001.",
-      status: "Success",
-      ipAddress: "192.168.1.12",
-    },
+    return [
+      {
+        id: 1,
+        date: currentDate,
+        time: "10:32 AM",
+        userId: "USR-001",
+        userName: "Admin",
+        action: "Create",
+        module: "Products",
+        record: "PRD-001",
+        description:
+          "Created new product Paracetamol 500mg.",
+        status: "Success",
+        ipAddress: "192.168.1.10",
+      },
 
-    {
-      id: 3,
-      date: "2026-08-26",
-      time: "11:20 AM",
-      userId: "USR-003",
-      userName: "Mary",
-      action: "Delete",
-      module: "Customers",
-      record: "CUS-004",
-      description:
-        "Deleted customer record CUS-004.",
-      status: "Success",
-      ipAddress: "192.168.1.15",
-    },
+      {
+        id: 2,
+        date: currentDate,
+        time: "11:05 AM",
+        userId: "USR-002",
+        userName: "John",
+        action: "Update",
+        module: "Invoices",
+        record: "TF-20260826-0001",
+        description:
+          "Updated customer invoice TF-20260826-0001.",
+        status: "Success",
+        ipAddress: "192.168.1.12",
+      },
 
-    {
-      id: 4,
-      date: "2026-08-26",
-      time: "12:10 PM",
-      userId: "USR-001",
-      userName: "Admin",
-      action: "Login",
-      module: "Authentication",
-      record: "-",
-      description:
-        "Admin successfully logged into the system.",
-      status: "Success",
-      ipAddress: "192.168.1.10",
-    },
+      {
+        id: 3,
+        date: currentDate,
+        time: "11:20 AM",
+        userId: "USR-003",
+        userName: "Mary",
+        action: "Delete",
+        module: "Customers",
+        record: "CUS-004",
+        description:
+          "Deleted customer record CUS-004.",
+        status: "Success",
+        ipAddress: "192.168.1.15",
+      },
 
-    {
-      id: 5,
-      date: "2026-08-26",
-      time: "12:35 PM",
-      userId: "USR-004",
-      userName: "David",
-      action: "Update",
-      module: "Stock",
-      record: "STK-003",
-      description:
-        "Adjusted stock quantity for product STK-003.",
-      status: "Success",
-      ipAddress: "192.168.1.18",
-    },
+      {
+        id: 4,
+        date: currentDate,
+        time: "12:10 PM",
+        userId: "USR-001",
+        userName: "Admin",
+        action: "Login",
+        module: "Authentication",
+        record: "-",
+        description:
+          "Admin successfully logged into the system.",
+        status: "Success",
+        ipAddress: "192.168.1.10",
+      },
 
-    {
-      id: 6,
-      date: "2026-08-26",
-      time: "01:05 PM",
-      userId: "USR-005",
-      userName: "Sarah",
-      action: "Login",
-      module: "Authentication",
-      record: "-",
-      description:
-        "Failed login attempt.",
-      status: "Failed",
-      ipAddress: "192.168.1.20",
-    },
-  ]);
+      {
+        id: 5,
+        date: currentDate,
+        time: "12:35 PM",
+        userId: "USR-004",
+        userName: "David",
+        action: "Update",
+        module: "Stock",
+        record: "STK-003",
+        description:
+          "Adjusted stock quantity for product STK-003.",
+        status: "Success",
+        ipAddress: "192.168.1.18",
+      },
+
+      {
+        id: 6,
+        date: currentDate,
+        time: "01:05 PM",
+        userId: "USR-005",
+        userName: "Sarah",
+        action: "Login",
+        module: "Authentication",
+        record: "-",
+        description:
+          "Failed login attempt.",
+        status: "Failed",
+        ipAddress: "192.168.1.20",
+      },
+
+      // ========================================
+      // CURRENT ACTIVITY
+      // ========================================
+
+      {
+        id: 7,
+        date: currentDate,
+        time: getCurrentTime(),
+        userId: "USR-001",
+        userName: "Admin",
+        action: "View",
+        module: "Audit Log",
+        record: "-",
+        description:
+          "Viewed the system audit log.",
+        status: "Success",
+        ipAddress: "192.168.1.10",
+      },
+    ];
+  });
 
   // ==========================================
   // FILTER LOGS
   // ==========================================
 
   const filteredLogs = useMemo(() => {
-    const query = search.toLowerCase().trim();
+    const query = search
+      .toLowerCase()
+      .trim();
 
     return auditLogs.filter((log) => {
+      // ========================================
+      // SEARCH
+      // ========================================
+
       const matchesSearch =
+        !query ||
         log.userName
           ?.toLowerCase()
           .includes(query) ||
@@ -156,21 +236,41 @@ const AuditLogMaster = () => {
           ?.toLowerCase()
           .includes(query);
 
+      // ========================================
+      // USER FILTER
+      // ========================================
+
       const matchesUser =
         filters.user === "all" ||
         log.userId === filters.user;
+
+      // ========================================
+      // MODULE FILTER
+      // ========================================
 
       const matchesModule =
         filters.module === "all" ||
         log.module === filters.module;
 
+      // ========================================
+      // ACTION FILTER
+      // ========================================
+
       const matchesAction =
         filters.action === "all" ||
         log.action === filters.action;
 
+      // ========================================
+      // STATUS FILTER
+      // ========================================
+
       const matchesStatus =
         filters.status === "all" ||
         log.status === filters.status;
+
+      // ========================================
+      // DATE FILTER
+      // ========================================
 
       const matchesDate =
         !filters.date ||
@@ -195,19 +295,27 @@ const AuditLogMaster = () => {
   // STATISTICS
   // ==========================================
 
-  const totalLogs = auditLogs.length;
+  const totalLogs =
+    auditLogs.length;
 
-  const successfulActions = auditLogs.filter(
-    (log) => log.status === "Success"
-  ).length;
+  const successfulActions =
+    auditLogs.filter(
+      (log) =>
+        log.status === "Success"
+    ).length;
 
-  const failedActions = auditLogs.filter(
-    (log) => log.status === "Failed"
-  ).length;
+  const failedActions =
+    auditLogs.filter(
+      (log) =>
+        log.status === "Failed"
+    ).length;
 
-  const uniqueUsers = new Set(
-    auditLogs.map((log) => log.userId)
-  ).size;
+  const uniqueUsers =
+    new Set(
+      auditLogs.map(
+        (log) => log.userId
+      )
+    ).size;
 
   // ==========================================
   // VIEW LOG
@@ -222,13 +330,18 @@ const AuditLogMaster = () => {
   // FILTER CHANGE
   // ==========================================
 
-  const handleFilterChange = (updatedFilters) => {
+  const handleFilterChange = (
+    updatedFilters
+  ) => {
     setFilters(updatedFilters);
   };
 
   // ==========================================
   // RESET FILTERS
   // ==========================================
+  // IMPORTANT:
+  // Reset brings the date back to TODAY,
+  // not an empty date.
 
   const handleResetFilters = () => {
     setFilters({
@@ -236,10 +349,45 @@ const AuditLogMaster = () => {
       module: "all",
       action: "all",
       status: "all",
-      date: "",
+      date: getCurrentDate(),
     });
 
     setSearch("");
+  };
+
+  // ==========================================
+  // FORMAT DATE
+  // ==========================================
+  // Converts:
+  // 2026-08-27
+  //
+  // Into:
+  // 27 Aug 2026
+
+  const formatDate = (date) => {
+    if (!date) {
+      return "-";
+    }
+
+    const parsedDate =
+      new Date(`${date}T00:00:00`);
+
+    if (
+      Number.isNaN(
+        parsedDate.getTime()
+      )
+    ) {
+      return date;
+    }
+
+    return parsedDate.toLocaleDateString(
+      "en-NG",
+      {
+        day: "2-digit",
+        month: "short",
+        year: "numeric",
+      }
+    );
   };
 
   return (
@@ -254,10 +402,12 @@ const AuditLogMaster = () => {
         <div className="flex items-center gap-3">
 
           <div className="p-3 bg-gray-100 rounded-xl">
+
             <ShieldCheck
               size={23}
               className="text-gray-700"
             />
+
           </div>
 
           <div>
@@ -353,21 +503,24 @@ const AuditLogMaster = () => {
       <AuditLogTable
         logs={filteredLogs}
         onView={handleViewLog}
+        formatDate={formatDate}
       />
 
       {/* ======================================
           LOG DETAILS
       ======================================= */}
 
-      {showDetails && selectedLog && (
-        <AuditLogDetails
-          log={selectedLog}
-          onClose={() => {
-            setShowDetails(false);
-            setSelectedLog(null);
-          }}
-        />
-      )}
+      {showDetails &&
+        selectedLog && (
+          <AuditLogDetails
+            log={selectedLog}
+            onClose={() => {
+              setShowDetails(false);
+              setSelectedLog(null);
+            }}
+            formatDate={formatDate}
+          />
+        )}
 
     </div>
   );
@@ -421,21 +574,28 @@ const StatCard = ({
 const AuditLogDetails = ({
   log,
   onClose,
+  formatDate,
 }) => {
   return (
     <div className="fixed inset-0 z-50 bg-black/40 flex items-center justify-center p-4">
 
       <div className="w-full max-w-2xl bg-white rounded-2xl shadow-xl overflow-hidden">
 
+        {/* ===================================
+            HEADER
+        ==================================== */}
+
         <div className="flex items-center justify-between px-6 py-5 border-b border-gray-200">
 
           <div className="flex items-center gap-3">
 
             <div className="p-3 bg-gray-100 rounded-xl">
+
               <Eye
                 size={20}
                 className="text-gray-700"
               />
+
             </div>
 
             <div>
@@ -462,11 +622,15 @@ const AuditLogDetails = ({
 
         </div>
 
+        {/* ===================================
+            DETAILS
+        ==================================== */}
+
         <div className="p-6 grid grid-cols-1 sm:grid-cols-2 gap-4">
 
           <DetailItem
             label="Date"
-            value={log.date}
+            value={formatDate(log.date)}
           />
 
           <DetailItem

@@ -1,9 +1,12 @@
-import React from 'react'
+import React from "react";
+import AuditLogMaster from "../../../component/admin/AuditLog/AuditLogMaster";
 
 const AuditLog = () => {
   return (
-    <div>AuditLog</div>
-  )
-}
+    <div>
+      <AuditLogMaster />
+    </div>
+  );
+};
 
-export default AuditLog
+export default AuditLog;
